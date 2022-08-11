@@ -1,0 +1,14 @@
+.idea
+*.iml
+.vscode
+
+/venv
+
+# Python leftovers
+__pycache__
+*.pyc
+*.egg-info
+.pytest_cache
+.coverage
+
+/.env

@@ -1,0 +1,13 @@
+name: drupal
+version: 0.0.1
+owner_email: sample@example.com
+lang: docker-proxy
+
+git:
+  remote: https://github.com/TheRacetrack/plugin-docker-proxy-job-type
+  directory: sample-drupal
+
+docker:
+  dockerfile_path: Dockerfile
+wrapper_properties:
+  user_module_port: 8000
