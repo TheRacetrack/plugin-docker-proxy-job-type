@@ -1,10 +1,8 @@
 from typing import Dict, Tuple
 from pathlib import Path
 
-from racetrack_commons.plugin.core import PluginCore
 
-
-class Plugin(PluginCore):
+class Plugin:
     def fatman_job_types(self, docker_registry_prefix: str) -> Dict[str, Tuple[str, Path]]:
         """
         Job types supported by this plugin
@@ -13,7 +11,7 @@ class Plugin(PluginCore):
         """
         return {
             'docker-proxy': (
-                f'{docker_registry_prefix}/docker-proxy:1.0.3', 
+                f'{docker_registry_prefix}/docker-proxy:1.1.0', 
                 self.plugin_dir / 'fatman-template.Dockerfile',
             ),
         }

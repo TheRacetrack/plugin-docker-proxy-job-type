@@ -1,4 +1,4 @@
-TAG ?= 1.0.3
+TAG ?= 1.1.0
 
 -include .env
 
@@ -22,14 +22,16 @@ build:
 		-f base.Dockerfile .
 
 push: build
+	docker login ghcr.io
 	docker tag ghcr.io/theracetrack/racetrack/fatman-base/docker-proxy:latest ghcr.io/theracetrack/racetrack/fatman-base/docker-proxy:$(TAG)
 	docker push ghcr.io/theracetrack/racetrack/fatman-base/docker-proxy:$(TAG)
 
 push-local: build
-	docker tag ghcr.io/theracetrack/racetrack/fatman-base/docker-proxy:latest localhost:5000/theracetrack/racetrack/fatman-base/docker-proxy:$(TAG)
-	docker push localhost:5000/theracetrack/racetrack/fatman-base/docker-proxy:$(TAG)
+	docker tag ghcr.io/theracetrack/racetrack/fatman-base/docker-proxy:latest localhost:5000/racetrack/fatman-base/docker-proxy:$(TAG)
+	docker push localhost:5000/racetrack/fatman-base/docker-proxy:$(TAG)
 
 push-private-registry: build
+	dcoker login ${REGISTRY}
 	docker tag ghcr.io/theracetrack/racetrack/fatman-base/docker-proxy:latest ${REGISTRY}/fatman-base/docker-proxy:$(TAG)
 	docker push ${REGISTRY}/fatman-base/docker-proxy:$(TAG)
 
@@ -38,3 +40,7 @@ push-all: push push-local push-private-registry
 env-template:
 	cp -n .env.dist .env
 	@echo "Now fill in the .env file with your settings"
+
+bundle:
+	cd docker-proxy-job &&\
+	racetrack-plugin-bundler bundle
