@@ -1,0 +1,3 @@
+[submodule "docker-http/racetrack"]
+	path = docker-http/racetrack
+	url = https://github.com/TheRacetrack/racetrack.git
