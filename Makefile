@@ -7,7 +7,7 @@ setup:
 	. venv/bin/activate &&\
 	pip install --upgrade pip setuptools &&\
 	cd docker-http &&\
-	( cd python_wrapper && make setup ) &&\
+	( cd proxy_wrapper && make setup ) &&\
 	( cd racetrack/racetrack_client && make setup ) &&\
 	( cd racetrack/racetrack_commons && make setup )
 	@echo Activate your venv:
