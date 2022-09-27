@@ -6,4 +6,4 @@ setup:
 
 run:
 	FATMAN_NAME=proxy FATMAN_VERSION=0.0.1 FATMAN_ENTRYPOINT_HOSTNAME=localhost \
-	proxy_wrapper run
+	proxy_wrapper run --port=7200

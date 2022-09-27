@@ -2,7 +2,7 @@ import os
 import time
 from urllib.parse import urlsplit
 
-from fastapi import FastAPI, APIRouter, Request, Response
+from fastapi import FastAPI, Request, Response, Body
 from starlette.background import BackgroundTask
 from starlette.datastructures import MutableHeaders
 import httpx
@@ -82,11 +82,10 @@ def setup_proxy_endpoints(app: FastAPI, base_url: str):
     user_module_port = int(os.environ.get('FATMAN_ENTRYPOINT_PORT', 7004))
     logger.info(f'Proxying requests to "{user_module_hostname}:{user_module_port}" at base path "{base_url}"')
 
-    @app.api_route("/api/v1/{path:path}", methods=["GET", "POST", "PUT", "DELETE"], tags=['API'])
-    async def _proxy_endpoint(path: str, request: Request):
+    async def _proxy_endpoint(request: Request, path: str, payload = Body(default={})):
         """Forward request to a user module"""
         subpath = f'/{request.path_params["path"]}'
-        logger.info(f'Forwarding {request.url} to: {subpath}')
+        logger.info(f'Forwarding {request.url} to http://{user_module_hostname}:{user_module_port}{subpath}')
 
         metric_requests_started.inc()
         metric_endpoint_requests_started.labels(endpoint=subpath).inc()
@@ -104,7 +103,7 @@ def setup_proxy_endpoints(app: FastAPI, base_url: str):
                                           content=await request.body())
             httpx_response = await client.send(rp_req, stream=True)
 
-            return _build_proxy_response(httpx_response, base_url)
+            return await _build_proxy_response(httpx_response, base_url)
 
         except BaseException as e:
             metric_request_internal_errors.labels(endpoint=subpath).inc()
@@ -113,6 +112,9 @@ def setup_proxy_endpoints(app: FastAPI, base_url: str):
             metric_request_duration.labels(endpoint=subpath).observe(time.time() - start_time)
             metric_requests_done.inc()
             metric_last_call_timestamp.set(time.time())
+
+    app.router.add_api_route("/api/v1/{path:path}", _proxy_endpoint,
+                             methods=["GET", "POST", "PUT", "DELETE"], tags=['API'])
 
 
 async def _build_proxy_response(httpx_response, base_url: str) -> Response:
