@@ -3,15 +3,14 @@ from pathlib import Path
 
 
 class Plugin:
-    def fatman_job_types(self, docker_registry_prefix: str) -> Dict[str, Tuple[str, Path]]:
+    def fatman_job_types(self) -> Dict[str, Tuple[Path, Path]]:
         """
-        Job types supported by this plugin
-        :param docker_registry_prefix: prefix for the image names (docker registry + namespace)
-        :return dict of job name -> (base image name, dockerfile template path)
+        Job types provided by this plugin
+        :return dict of job type name (with version) -> (base image path, dockerfile template path)
         """
         return {
-            'docker-proxy': (
-                f'{docker_registry_prefix}/docker-proxy:1.1.0', 
+            f'docker-proxy:{self.plugin_manifest.version}': (
+                self.plugin_dir / 'base.Dockerfile',
                 self.plugin_dir / 'fatman-template.Dockerfile',
             ),
         }
