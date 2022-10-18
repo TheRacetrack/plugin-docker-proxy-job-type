@@ -21,4 +21,4 @@ build:
 
 bundle:
 	cd docker-proxy-job &&\
-	racetrack-plugin-bundler bundle --plugin-version=${TAG} --out=..
+	racetrack plugin bundle --plugin-version=${TAG} --out=..

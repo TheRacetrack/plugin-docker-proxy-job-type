@@ -4,8 +4,7 @@ A Racetrack plugin allowing to deploy Docker Proxy jobs (like Drupal) to
 [Racetrack](https://github.com/TheRacetrack/racetrack)
 
 ## Setup
-1. [Install racetrack-plugin-bundler](https://github.com/TheRacetrack/racetrack/blob/master/utils/plugin_bundler/README.md)
-  and generate ZIP plugin by running `make bundle`.
+1. Install `racetrack` client and generate ZIP plugin by running `make bundle`.
 
 2. Activate the plugin in Racetrack Dashboard Admin page
   by uploading the zipped plugin file.
