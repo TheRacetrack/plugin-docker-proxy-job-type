@@ -22,7 +22,7 @@ build:
 
 bundle:
 	cd docker-http &&\
-	racetrack-plugin-bundler bundle --plugin-version=${TAG} --out=..
+	racetrack plugin bundle --plugin-version=${TAG} --out=..
 
 init-racetrack-submodule:
 	git submodule update --init --recursive
