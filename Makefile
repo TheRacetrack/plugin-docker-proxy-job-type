@@ -1,5 +1,3 @@
-TAG ?= 1.2.0
-
 setup:
 	cd docker-proxy-job &&\
 	pip install -r proxy_wrapper/requirements.txt
@@ -21,4 +19,4 @@ build:
 
 bundle:
 	cd docker-proxy-job &&\
-	racetrack plugin bundle --plugin-version=${TAG} --out=..
+	racetrack plugin bundle --out=..
