@@ -14,7 +14,6 @@ from racetrack_commons.api.asgi.proxy import mount_at_base_path
 from racetrack_commons.api.metrics import setup_metrics_endpoint
 from racetrack_commons.auth.methods import get_racetrack_authorizations_methods
 from racetrack_commons.telemetry.otlp import setup_opentelemetry
-from proxy_wrapper.config import Config
 from proxy_wrapper.metrics import (
     metric_request_duration,
     metric_request_internal_errors,
@@ -27,10 +26,10 @@ from proxy_wrapper.metrics import (
 logger = get_logger(__name__)
 
 
-def serve_proxy(config: Config):
+def serve_proxy(http_port: int):
     fastapi_app = create_fastapi_app()
     serve_asgi_app(
-        fastapi_app, http_addr=config.http_addr, http_port=config.http_port,
+        fastapi_app, http_addr='0.0.0.0', http_port=http_port,
     )
 
 
@@ -78,8 +77,8 @@ def _setup_health_endpoints(app: FastAPI):
 
 
 def setup_proxy_endpoints(app: FastAPI, base_url: str):
-    user_module_hostname = os.environ['FATMAN_ENTRYPOINT_HOSTNAME']
-    user_module_port = int(os.environ.get('FATMAN_ENTRYPOINT_PORT', 7004))
+    user_module_hostname = os.environ['FATMAN_USER_MODULE_HOSTNAME']
+    user_module_port = int(os.environ.get('FATMAN_USER_MODULE_PORT', 7001))
     logger.info(f'Proxying requests to "{user_module_hostname}:{user_module_port}" at base path "{base_url}"')
 
     async def _proxy_endpoint(request: Request, path: str, payload = Body(default={})):

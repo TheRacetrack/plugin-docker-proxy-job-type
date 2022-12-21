@@ -1,3 +1,4 @@
-[submodule "docker-http/racetrack"]
-	path = docker-http/racetrack
+[submodule "src/racetrack"]
+	path = src/racetrack
 	url = https://github.com/TheRacetrack/racetrack.git
+	branch = master

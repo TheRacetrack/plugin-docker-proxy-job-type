@@ -3,8 +3,8 @@ import sys
 
 from racetrack_client.log.logs import init_logs, configure_logs
 from racetrack_client.log.logs import get_logger
+
 from proxy_wrapper.api import serve_proxy
-from proxy_wrapper.config import Config
 
 logger = get_logger(__name__)
 
@@ -27,10 +27,11 @@ def main():
 def run_entrypoint(args: argparse.Namespace):
     """Load entrypoint class and run it embedded in a HTTP server"""
     init_logs()
-    config = Config()
-    configure_logs(log_level=config.log_level)
+    configure_logs(log_level='debug')
 
-    if args.port:
-        config.http_port = args.port
+    http_port = args.port or 7000
+    serve_proxy(http_port)
 
-    serve_proxy(config)
+
+if __name__ == '__main__':
+    main()
