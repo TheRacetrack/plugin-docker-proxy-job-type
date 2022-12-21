@@ -114,8 +114,8 @@ def create_fastapi_app() -> FastAPI:
 
 
 def setup_endpoints(app: FastAPI):
-    user_module_hostname = os.environ['FATMAN_ENTRYPOINT_HOSTNAME']
-    user_module_port = int(os.environ.get('FATMAN_ENTRYPOINT_PORT', 80))
+    user_module_hostname = os.environ['FATMAN_USER_MODULE_HOSTNAME']
+    user_module_port = int(os.environ.get('FATMAN_USER_MODULE_PORT', 80))
     logger.info(f'Proxying requests to "{user_module_hostname}:{user_module_port}" at base path "{BASE_URL}"')
 
     rewrite_proxy_paths = load_proxy_rewriter()
@@ -177,7 +177,8 @@ def setup_endpoints(app: FastAPI):
             background=BackgroundTask(response.aclose),
         )
 
-    app.add_route("/{path:path}", _proxy_endpoint, ["GET", "POST"])
+    app.router.add_api_route("/{path:path}", _proxy_endpoint,
+                             methods=["GET", "POST", "PUT", "DELETE"], tags=['API'])
 
 
 def load_proxy_rewriter() -> Callable:

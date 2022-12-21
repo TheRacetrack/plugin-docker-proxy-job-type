@@ -1,6 +1,6 @@
 # Racetrack Plugin: Docker Proxy Job Type
 
-A Racetrack plugin allowing to deploy Docker Proxy jobs (like Drupal) to
+A Racetrack plugin allowing to deploy Docker jobs (like Drupal) with a configurable proxy to
 [Racetrack](https://github.com/TheRacetrack/racetrack)
 
 ## Setup

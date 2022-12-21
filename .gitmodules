@@ -1,3 +1,0 @@
-[submodule "sample-hugo/hugo_site/themes/ananke"]
-	path = sample-hugo/hugo_site/themes/ananke
-	url = https://github.com/theNewDynamic/gohugo-theme-ananke.git

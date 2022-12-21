@@ -22,3 +22,7 @@ def main():
 def _run_proxy(args: argparse.Namespace):
     configure_logs(log_level='debug')
     serve_proxy()
+
+
+if __name__ == '__main__':
+    main()
