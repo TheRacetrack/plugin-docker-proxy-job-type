@@ -9,3 +9,5 @@
 -.pytest_cache
 -.coverage
 -.mypy_cache
+
+-Makefile
