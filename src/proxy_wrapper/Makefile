@@ -1,7 +1,10 @@
 .PHONY: setup test run
 
 setup:
-	pip install -r requirements.txt
+	pip install \
+		-r requirements.txt \
+		-r racetrack_client/requirements.txt \
+		-r racetrack_commons/requirements.txt
 
 run:
 	FATMAN_NAME=proxy FATMAN_VERSION=0.0.1 FATMAN_USER_MODULE_HOSTNAME=localhost \

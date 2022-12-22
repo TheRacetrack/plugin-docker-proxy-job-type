@@ -1,8 +1,7 @@
 import argparse
 import sys
 
-from racetrack_client.log.logs import init_logs, configure_logs
-from racetrack_client.log.logs import get_logger
+from racetrack_client.log.logs import init_logs, configure_logs, get_logger
 
 from proxy_wrapper.api import serve_proxy
 

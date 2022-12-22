@@ -1,4 +1,0 @@
-[submodule "src/racetrack"]
-	path = src/racetrack
-	url = https://github.com/TheRacetrack/racetrack.git
-	branch = master
