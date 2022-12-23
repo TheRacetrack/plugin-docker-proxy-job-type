@@ -17,3 +17,11 @@ test-build:
 bundle:
 	cd src &&\
 	racetrack plugin bundle --out=..
+
+run:
+	cd src/proxy_wrapper &&\
+	FATMAN_NAME=drupal FATMAN_VERSION=0.0.1 \
+	FATMAN_USER_MODULE_HOSTNAME=127.0.0.1 \
+	FATMAN_USER_MODULE_PORT=80 \
+	PROXY_MODULE=../../sample/drupal/proxy_settings.py \
+	python -m proxy_wrapper.main run
