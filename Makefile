@@ -11,7 +11,7 @@ setup:
 test-build:
 	cd src &&\
 	DOCKER_BUILDKIT=1 docker build \
-		-t racetrack/fatman-base/docker-http:latest \
+		-t racetrack/fatman-base/docker-proxy:latest \
 		-f base.Dockerfile .
 
 bundle:

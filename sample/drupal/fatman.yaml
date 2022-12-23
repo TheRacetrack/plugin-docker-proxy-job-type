@@ -1,10 +1,13 @@
-name: docker-golang-http
+name: drupal
 owner_email: sample@example.com
 lang: docker-proxy:latest
 
 git:
   remote: https://github.com/TheRacetrack/plugin-docker-proxy-job-type
-  directory: sample/docker-golang-http
+  directory: sample/drupal
 
 docker:
   dockerfile_path: Dockerfile
+wrapper_properties:
+  proxy_mode: rewrite
+  user_module_port: 8000

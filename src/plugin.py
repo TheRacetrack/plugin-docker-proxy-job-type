@@ -9,7 +9,7 @@ class Plugin:
         :return dict of job type name (with version) -> list of images: (base image path, dockerfile template path)
         """
         return {
-            f'docker-http:{self.plugin_manifest.version}': [
+            f'docker-proxy:{self.plugin_manifest.version}': [
                 (self.plugin_dir / 'base.Dockerfile', self.plugin_dir / 'fatman-template.Dockerfile'),
                 (None, None),
             ],
