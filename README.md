@@ -23,6 +23,8 @@ You can deploy sample Dockerfile job by running:
 racetrack deploy sample/docker-golang-http
 ```
 
+See [how to use Dockerfile job type](./docs/job_docker.md).
+
 # Development
 Setup & activate Python venv (this is required for local development):
 
