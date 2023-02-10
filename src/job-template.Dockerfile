@@ -6,10 +6,10 @@ ENV PROXY_MODE "rewrite"
 {% endif %}
 
 {% if manifest.wrapper_properties and manifest.wrapper_properties['user_module_port'] %}
-ENV FATMAN_USER_MODULE_PORT "{{ manifest.wrapper_properties['user_module_port'] }}"
+ENV JOB_USER_MODULE_PORT "{{ manifest.wrapper_properties['user_module_port'] }}"
 {% endif %}
 
-ENV FATMAN_NAME "{{ manifest.name }}"
-ENV FATMAN_VERSION "{{ manifest.version }}"
+ENV JOB_NAME "{{ manifest.name }}"
+ENV JOB_VERSION "{{ manifest.version }}"
 ENV GIT_VERSION "{{ git_version }}"
 ENV DEPLOYED_BY_RACETRACK_VERSION "{{ deployed_by_racetrack_version }}"

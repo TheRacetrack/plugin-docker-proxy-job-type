@@ -11,7 +11,7 @@ setup:
 test-build:
 	cd src &&\
 	DOCKER_BUILDKIT=1 docker build \
-		-t racetrack/fatman-base/docker-proxy:latest \
+		-t racetrack/job-base/docker-proxy:latest \
 		-f base.Dockerfile .
 
 bundle:
@@ -20,8 +20,8 @@ bundle:
 
 run:
 	cd src/proxy_wrapper &&\
-	FATMAN_NAME=drupal FATMAN_VERSION=0.0.1 \
-	FATMAN_USER_MODULE_HOSTNAME=127.0.0.1 \
-	FATMAN_USER_MODULE_PORT=80 \
+	JOB_NAME=drupal JOB_VERSION=0.0.1 \
+	JOB_USER_MODULE_HOSTNAME=127.0.0.1 \
+	JOB_USER_MODULE_PORT=80 \
 	PROXY_MODULE=../../sample/drupal/proxy_settings.py \
 	python -m proxy_wrapper.main run

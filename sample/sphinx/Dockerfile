@@ -20,4 +20,4 @@ COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --from=0 /docs/_build/html /usr/share/nginx/html
 
 EXPOSE 8000
-LABEL racetrack-component="fatman"
+LABEL racetrack-component="job"

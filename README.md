@@ -41,7 +41,7 @@ make setup
 
 # Proxy modes
 This plugin extends Racetrack with `docker-proxy` job type,
-which creates a Fatman composed of two containers:  
+which creates a Job composed of two containers:  
 
 1. proxy container - forwarding requests to your user-module, serving SwaggerUI and metrics,
 2. user-module docker container - originating from a Dockerfile provided by you.
@@ -65,12 +65,12 @@ It allows to operate with Docker jobs like Drupal or Sphinx.
 ## How it works
 
 Custom docker container might be your Drupal site defined in [Dockerfile](./sample-drupal/Dockerfile) 
-in your fatman directory by simply putting `FROM drupal:9` or anything else.
+in your job directory by simply putting `FROM drupal:9` or anything else.
 
 However, Drupal runs on root endpoint (`/` base URL) and it cannot be changed easily, 
-while Fatmen are served at `/pub/fatman/<name>/<version>/` base URL.
-That's why there is needed a proxy container which is a main entrypoint of a Fatman
-and it receives traffic at `/pub/fatman/<name>/<version>/` 
+while Jobs are served at `/pub/job/<name>/<version>/` base URL.
+That's why there is needed a proxy container which is a main entrypoint of a Job
+and it receives traffic at `/pub/job/<name>/<version>/` 
 and forwards it to your docker container,
 rewriting URL (trimming the prefix).
 
@@ -79,7 +79,7 @@ still thinks it is being served at root endpoint so it puts some URL addresses i
 (eg. `/static/style.css`) as if it was really served at `/`.
 That creates a lot of problems, cause when HTML gets rendered in your browser, 
 your browser tries to access `/static/style.css` directly from Racetrack's PUB. 
-That's not accessible as your fatman is being served at `/pub/fatman/<name>/<version>/`.
+That's not accessible as your job is being served at `/pub/job/<name>/<version>/`.
 In other words, the proxy rewriting request paths isn't really transparent
 and it can break some frontend applications.
 
@@ -89,7 +89,7 @@ it should also transform URLs back (add the prefix) when the HTML response is be
 
 For instance, when Drupal returns `/static/style.css` URL, 
 it should be transformed by the proxy to a valid address accessible by your 
-browser from the outside, that is `/pub/fatman/<name>/<version>/static/style.css`
+browser from the outside, that is `/pub/job/<name>/<version>/static/style.css`
 
 Now that the URL addresses can be located in different places in HTML of your Drupal site
 and it may vary depending on the application,

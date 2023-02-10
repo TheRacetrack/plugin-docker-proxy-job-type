@@ -11,4 +11,4 @@ RUN mkdir /var/www/html/sites/default/files &&\
 COPY apache-ports.conf /etc/apache2/ports.conf
 
 EXPOSE 8000
-LABEL racetrack-component="fatman"
+LABEL racetrack-component="job"

@@ -1,4 +1,4 @@
-# This file is just a stub, it is overwritten by fatman-template.Dockerfile
+# This file is just a stub, it is overwritten by job-template.Dockerfile
 from typing import Dict
 
 
