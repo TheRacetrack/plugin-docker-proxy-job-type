@@ -16,9 +16,9 @@ from racetrack_client.log.logs import get_logger
 
 logger = get_logger(__name__)
 
-FATMAN_NAME = os.environ.get('FATMAN_NAME', 'fatman_name')
-FATMAN_VERSION = os.environ.get('FATMAN_VERSION', 'fatman_version')
-BASE_URL = f'/pub/fatman/{FATMAN_NAME}/{FATMAN_VERSION}'
+JOB_NAME = os.environ.get('JOB_NAME', 'job_name')
+JOB_VERSION = os.environ.get('JOB_VERSION', 'job_version')
+BASE_URL = f'/pub/job/{JOB_NAME}/{JOB_VERSION}'
 
 REWRITE_PROXY_PATHS_FUNCTION = 'rewrite_proxy_paths'
 
@@ -43,13 +43,13 @@ def create_rewrite_proxy_app() -> FastAPI:
     async def home():
         return RedirectResponse(f"{BASE_URL}/")
 
-    @app.get("/fatman/status")
+    @app.get("/job/status")
     async def _status():
         return {'status': 'ok'}
 
     @app.get("/live")
     async def _live():
-        deployment_timestamp = int(os.environ.get('FATMAN_DEPLOYMENT_TIMESTAMP', '0'))
+        deployment_timestamp = int(os.environ.get('JOB_DEPLOYMENT_TIMESTAMP', '0'))
         return {
             'live': True,
             'deployment_timestamp': deployment_timestamp,
@@ -92,8 +92,8 @@ def create_rewrite_proxy_app() -> FastAPI:
 
 
 def setup_endpoints(app: FastAPI):
-    user_module_hostname = os.environ['FATMAN_USER_MODULE_HOSTNAME']
-    user_module_port = int(os.environ.get('FATMAN_USER_MODULE_PORT', 80))
+    user_module_hostname = os.environ['JOB_USER_MODULE_HOSTNAME']
+    user_module_port = int(os.environ.get('JOB_USER_MODULE_PORT', 80))
     logger.info(f'Proxying rewrited requests to "{user_module_hostname}:{user_module_port}" at base path "{BASE_URL}"')
 
     rewrite_proxy_paths = load_proxy_rewriter()

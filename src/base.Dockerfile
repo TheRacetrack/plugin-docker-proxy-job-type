@@ -15,4 +15,4 @@ COPY proxy_wrapper/proxy_wrapper/. /src/proxy_wrapper/proxy_wrapper/
 
 ENV PYTHONPATH "/src/proxy_wrapper"
 CMD python -u -m proxy_wrapper.main run
-LABEL racetrack-component="fatman"
+LABEL racetrack-component="job"

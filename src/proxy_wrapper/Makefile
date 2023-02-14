@@ -7,5 +7,5 @@ setup:
 		-r racetrack_commons/requirements.txt
 
 run:
-	FATMAN_NAME=proxy FATMAN_VERSION=0.0.1 FATMAN_USER_MODULE_HOSTNAME=localhost \
+	JOB_NAME=proxy JOB_VERSION=0.0.1 JOB_USER_MODULE_HOSTNAME=localhost \
 	python -m proxy_wrapper.main run --port=7200
