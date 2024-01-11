@@ -8,15 +8,13 @@ setup:
 	@echo Activate your venv:
 	@echo . venv/bin/activate
 
-test-build:
-	cd src &&\
-	DOCKER_BUILDKIT=1 docker build \
-		-t racetrack/job-base/docker-proxy:latest \
-		-f base.Dockerfile .
-
 bundle:
 	cd src &&\
-	racetrack plugin bundle --out=..
+	racetrack plugin bundle --out=.. &&\
+	racetrack plugin bundle --out=.. --out-filename=latest.zip
+
+install:
+	racetrack plugin install --replace latest.zip
 
 run:
 	cd src/proxy_wrapper &&\
