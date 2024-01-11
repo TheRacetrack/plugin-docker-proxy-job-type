@@ -104,8 +104,9 @@ def setup_proxy_endpoints(app: FastAPI, base_url: str):
             metric_requests_done.inc()
             metric_last_call_timestamp.set(time.time())
 
-    app.router.add_api_route("/api/v1/{path:path}", _proxy_endpoint,
-                             methods=["GET", "POST", "PUT", "DELETE"], tags=['API'])
+    for method in ["GET", "POST", "PUT", "DELETE"]:
+        app.router.add_api_route("/api/v1/{path:path}", _proxy_endpoint,
+                                 methods=[method], tags=['API'], operation_id=f'{method}_proxy_endpoint')
 
 
 async def _build_proxy_response(httpx_response, base_url: str) -> Response:
