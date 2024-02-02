@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from racetrack_client.log.logs import init_logs, configure_logs, get_logger
+from racetrack_client.log.logs import configure_logs, get_logger
 
 from proxy_wrapper.api import serve_proxy
 
@@ -25,7 +25,6 @@ def main():
 
 def run_entrypoint(args: argparse.Namespace):
     """Load entrypoint class and run it embedded in a HTTP server"""
-    init_logs()
     configure_logs(log_level='debug')
 
     http_port = args.port or 7000
