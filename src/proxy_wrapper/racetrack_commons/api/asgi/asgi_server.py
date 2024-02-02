@@ -1,4 +1,8 @@
-from typing import Union
+import contextlib
+import signal
+import threading
+import time
+from typing import Union, Callable, Optional
 import logging
 
 import uvicorn
@@ -6,7 +10,9 @@ from uvicorn.config import LOGGING_CONFIG
 from uvicorn.logging import DefaultFormatter, AccessFormatter
 from starlette.types import ASGIApp
 
+from racetrack_client.log.exception import log_exception
 from racetrack_client.log.logs import get_logger
+from racetrack_client.utils.env import is_env_flag_enabled
 from racetrack_commons.api.debug import is_deployment_local
 
 logger = get_logger(__name__)
@@ -23,17 +29,65 @@ HIDDEN_ACCESS_LOGS = {
     'GET /metrics/ 200',
 }
 
+UVICORN_ERROR_LOGS = True
+
 
 def serve_asgi_app(
     app: Union[ASGIApp, str],
-    http_addr: str,
     http_port: int,
+    http_addr: str = '0.0.0.0',
     access_log: bool = False,
+    on_shutdown: Optional[Callable[[], None]] = None
 ):
     use_reloader = is_deployment_local() and isinstance(app, str)
     mode_info = ' in RELOAD mode' if use_reloader else ''
     logger.info(f'Running ASGI server on http://{http_addr}:{http_port}{mode_info}')
+    _setup_uvicorn_logs(access_log)
 
+    config = uvicorn.Config(
+        app=app,
+        host=http_addr,
+        port=http_port,
+        log_level="debug",
+        reload=use_reloader,
+        timeout_graceful_shutdown=3,
+    )
+    server = ManagableServer(config)
+
+    def shutdown_signal_handler(sig, frame):
+        logger.info(f'received signal {sig}, shutting down...')
+        if on_shutdown is not None:
+            try:
+                on_shutdown()
+            except BaseException as e:
+                log_exception(e)
+        server.should_exit = True
+
+    signal.signal(signal.SIGTERM, shutdown_signal_handler)
+    signal.signal(signal.SIGINT, shutdown_signal_handler)
+
+    server.run()
+
+
+def serve_asgi_in_background(
+    app: Union[ASGIApp, str],
+    http_port: int,
+    http_addr: str = '0.0.0.0',
+    access_log: bool = False,
+) -> contextlib.AbstractContextManager:
+    logger.info(f'Running ASGI server in background on http://{http_addr}:{http_port}')
+    _setup_uvicorn_logs(access_log)
+    config = uvicorn.Config(
+        app=app,
+        host=http_addr,
+        port=http_port,
+        log_level="debug",
+        timeout_graceful_shutdown=3,
+    )
+    return BackgroundServer(config=config).run_in_thread()
+
+
+def _setup_uvicorn_logs(access_log: bool):
     LOGGING_CONFIG["formatters"]["default"]["fmt"] = "\033[2m[%(asctime)s]\033[0m %(levelname)s %(message)s"
     LOGGING_CONFIG["formatters"]["default"]["datefmt"] = "%Y-%m-%d %H:%M:%S"
     LOGGING_CONFIG["formatters"]["default"]["()"] = "racetrack_commons.api.asgi.asgi_server.ColoredDefaultFormatter"
@@ -53,12 +107,17 @@ def serve_asgi_app(
     }
 
     LOGGING_CONFIG["loggers"]["uvicorn"]["propagate"] = False
+    if not UVICORN_ERROR_LOGS:
+        LOGGING_CONFIG["loggers"]["uvicorn.error"]["level"] = 'INFO'
+        LOGGING_CONFIG["loggers"]["uvicorn.error"]["propagate"] = False
 
     if not access_log:
         LOGGING_CONFIG["loggers"]["uvicorn.access"]["level"] = 'CRITICAL'
         LOGGING_CONFIG["loggers"]["uvicorn.access"]["handlers"] = []
 
-    uvicorn.run(app=app, host=http_addr, port=http_port, log_level="debug", reload=use_reloader)
+    if is_env_flag_enabled('LOG_STRUCTURED', 'false'):
+        LOGGING_CONFIG["formatters"]["default"]["()"] = "racetrack_client.log.logs.StructuredFormatter"
+        LOGGING_CONFIG["formatters"]["access"]["()"] = "racetrack_client.log.logs.StructuredFormatter"
 
 
 _log_level_templates = {
@@ -75,7 +134,7 @@ class ColoredDefaultFormatter(logging.Formatter):
         logging.Formatter.__init__(self)
         self.plain_formatter = DefaultFormatter(**kwargs)
 
-    def format(self, record: logging.LogRecord):
+    def format(self, record: logging.LogRecord) -> str:
         if record.levelname in _log_level_templates:
             record.levelname = _log_level_templates[record.levelname].format(record.levelname)
         return self.plain_formatter.format(record)
@@ -86,7 +145,7 @@ class ColoredAccessFormatter(logging.Formatter):
         logging.Formatter.__init__(self)
         self.plain_formatter = AccessFormatter(**kwargs)
 
-    def format(self, record: logging.LogRecord):
+    def format(self, record: logging.LogRecord) -> str:
         if record.levelname in _log_level_templates:
             record.levelname = _log_level_templates[record.levelname].format(record.levelname)
         return self.plain_formatter.format(record)
@@ -101,3 +160,25 @@ class NeedlessRequestsFilter(logging.Filter):
         if log_line in HIDDEN_ACCESS_LOGS:
             return False
         return True
+
+
+class BackgroundServer(uvicorn.Server):
+    def install_signal_handlers(self):
+        pass
+
+    @contextlib.contextmanager
+    def run_in_thread(self):
+        thread = threading.Thread(target=self.run)
+        thread.start()
+        try:
+            while not self.started:
+                time.sleep(1e-3)
+            yield
+        finally:
+            self.should_exit = True
+            thread.join()
+
+
+class ManagableServer(uvicorn.Server):
+    def install_signal_handlers(self):
+        pass
