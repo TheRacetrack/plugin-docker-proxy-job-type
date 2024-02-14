@@ -1,5 +1,9 @@
 from functools import total_ordering
 import re
+from typing import Any
+
+from pydantic import GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
 
 
 @total_ordering
@@ -16,11 +20,11 @@ class Quantity:
         'u': 1e-6,
         'n': 1e-9,
         'p': 1e-12,
-        'Ei': 1024**6,
-        'Pi': 1024**5,
-        'Ti': 1024**4,
-        'Gi': 1024**3,
-        'Mi': 1024**2,
+        'Ei': 1024 ** 6,
+        'Pi': 1024 ** 5,
+        'Ti': 1024 ** 4,
+        'Gi': 1024 ** 3,
+        'Mi': 1024 ** 2,
         'Ki': 1024,
     }
 
@@ -43,7 +47,7 @@ class Quantity:
         self.base_number: float = float(match.group('number'))
         self.suffix: str = match.group('suffix')
 
-        if not self.suffix in self._suffix_multipliers:
+        if self.suffix not in self._suffix_multipliers:
             raise ValueError(f'invalid suffix: {self.suffix}, use one of {self._suffix_multipliers.keys()}')
 
     def __str__(self) -> str:
@@ -51,7 +55,7 @@ class Quantity:
 
     def __repr__(self) -> str:
         return self.__str__()
-    
+
     def __bool__(self) -> bool:
         return self.base_number > 0
 
@@ -81,3 +85,15 @@ class Quantity:
     def plain_number(self) -> float:
         """Convert quantity to a plain number without any suffixes"""
         return self.base_number * self._suffix_multipliers[self.suffix]
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+            cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        return core_schema.no_info_after_validator_function(cls.validate, handler(source_type))
+
+    @classmethod
+    def validate(cls, v):
+        if v is None:
+            return None
+        return Quantity(str(v))

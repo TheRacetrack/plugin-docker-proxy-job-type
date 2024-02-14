@@ -11,15 +11,15 @@ T = TypeVar("T", bound=BaseModel)
 
 
 def parse_dict_datamodel(
-    obj_dict: Dict, 
-    clazz: Type[T], 
+    obj_dict: Dict,
+    clazz: Type[T],
 ) -> T:
     """
     Cast dict object to expected pydantic model
     :param obj_dict: dict object to be transformed to pydantic.BaseModel
     :param clazz: pydantic.BaseModel type
     """
-    return clazz.parse_obj(obj_dict)
+    return clazz.model_validate(obj_dict)
 
 
 def parse_dict_datamodels(
@@ -42,7 +42,7 @@ def parse_yaml_datamodel(
     data = yaml.load(yaml_obj, Loader=yaml.FullLoader)
     if data is None:
         data = {}
-    return clazz.parse_obj(data)
+    return clazz.model_validate(data)
 
 
 def parse_yaml_file_datamodel(
@@ -70,8 +70,14 @@ def convert_to_json(obj) -> str:
     return json.dumps(obj)
 
 
+def convert_to_yaml(obj) -> str:
+    obj = convert_to_json_serializable(obj)
+    obj = remove_none(obj)
+    return yaml.dump(obj, sort_keys=False)
+
+
 def datamodel_to_dict(dt: BaseModel) -> Dict:
-    data_dict = dt.dict()
+    data_dict = dt.model_dump()
     data_dict = remove_none(data_dict)
     data_dict = convert_to_json_serializable(data_dict)
     return data_dict
@@ -91,7 +97,7 @@ def convert_to_json_serializable(obj):
     if dataclasses.is_dataclass(obj):
         return convert_to_json_serializable(dataclasses.asdict(obj))
     elif isinstance(obj, BaseModel):
-        return obj.dict()
+        return obj.model_dump()
     elif isinstance(obj, PosixPath):
         return str(obj)
     elif isinstance(obj, (date, datetime)):
