@@ -6,6 +6,3 @@ version: 0.0.2
 git:
   remote: https://github.com/TheRacetrack/plugin-docker-proxy-job-type
   directory: sample/docker-python-flask
-
-docker:
-  dockerfile_path: Dockerfile

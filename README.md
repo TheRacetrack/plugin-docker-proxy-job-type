@@ -8,6 +8,9 @@ as long as it handles HTTP calls and adheres to few rules.
 "docker-proxy" job type is intended to handle the HTTP calls to your Web server written 
 in any programming language, enclosed in a docker image by Dockerfile recipe.
 
+Racetrack requires compliance with a few principles that public Docker images don't meet out of the box.
+That's why this job type comes with a proxy server that adheres to the Racetrack requirements and forwards the requests to the actual Docker container.
+
 Dockerfile jobs should be used as a last resort. You should rather use job types
 specifically dedicated to your language, if possible.
 

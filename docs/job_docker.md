@@ -93,7 +93,4 @@ lang: docker-proxy:latest
 git:
   remote: https://github.com/racetrack/supersmart-model
   branch: master
-
-docker:
-  dockerfile_path: Dockerfile
 ```

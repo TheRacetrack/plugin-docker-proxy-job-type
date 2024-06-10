@@ -7,9 +7,6 @@ git:
   remote: https://github.com/TheRacetrack/plugin-docker-proxy-job-type
   directory: sample/drupal
 
-docker:
-  dockerfile_path: Dockerfile
-
 jobtype_extra:
   proxy_mode: rewrite
   user_module_port: 8000
