@@ -3,3 +3,6 @@ ENV MODEL_ID=distilbert/distilgpt2
 # preapre the image to be used by non-root user
 RUN mkdir -p /data && chmod 777 /data /usr/src && useradd --create-home --uid 100000 job
 USER 100000
+ENV PORT=8000
+
+ENV RUST_BACKTRACE=1
