@@ -11,3 +11,6 @@ git:
 jobtype_extra:
   proxy_mode: rewrite
   user_module_port: 80
+
+resources:
+  memory_max: 2Gi
