@@ -1,0 +1,13 @@
+name: tgi-distilgpt2
+owner_email: sample@example.com
+jobtype: docker-proxy:latest
+version: 0.0.1
+
+git:
+  remote: https://github.com/TheRacetrack/plugin-docker-proxy-job-type
+  directory: sample/tgi
+  branch: tgi-test
+
+jobtype_extra:
+  proxy_mode: rewrite
+  user_module_port: 80
