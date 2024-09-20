@@ -1,4 +1,4 @@
 name: docker-proxy-job-type
-version: 3.2.1
+version: 3.2.2
 url: 'https://github.com/TheRacetrack/plugin-docker-proxy-job-type'
 category: 'job-type'

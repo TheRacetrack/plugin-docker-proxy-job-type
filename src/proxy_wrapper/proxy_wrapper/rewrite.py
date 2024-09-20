@@ -103,7 +103,7 @@ def setup_endpoints(app: FastAPI):
         subpath = f'/{request.path_params["path"]}'
         logger.info(f'Forwarding {request.url.path}{request.url.query} to: {subpath}')
 
-        client = httpx.AsyncClient(base_url=f"http://{user_module_hostname}:{user_module_port}/")
+        client = httpx.AsyncClient(base_url=f"http://{user_module_hostname}:{user_module_port}/", timeout=120)
 
         url = httpx.URL(path=subpath, query=request.url.query.encode("utf-8"))
 
